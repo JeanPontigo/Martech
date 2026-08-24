@@ -1,0 +1,350 @@
+region,comunas
+Arica y Parinacota,Arica
+Arica y Parinacota,Camarones
+Arica y Parinacota,Putre
+Arica y Parinacota,General Lagos
+Tarapacá,Iquique
+Tarapacá,Alto Hospicio
+Tarapacá,Pozo Almonte
+Tarapacá,Camiña
+Tarapacá,Colchane
+Tarapacá,Huara
+Tarapacá,Pica
+Antofagasta,Antofagasta
+Antofagasta,Mejillones
+Antofagasta,Sierra Gorda
+Antofagasta,Taltal
+Antofagasta,Calama
+Antofagasta,Ollagüe
+Antofagasta,San Pedro de Atacama
+Antofagasta,Tocopilla
+Antofagasta,María Elena
+Atacama,Copiapó
+Atacama,Caldera
+Atacama,Tierra Amarilla
+Atacama,Chañaral
+Atacama,Diego de Almagro
+Atacama,Vallenar
+Atacama,Alto del Carmen
+Atacama,Freirina
+Atacama,Huasco
+Coquimbo,La Serena
+Coquimbo,Coquimbo
+Coquimbo,Andacollo
+Coquimbo,La Higuera
+Coquimbo,Paiguano
+Coquimbo,Vicuña
+Coquimbo,Illapel
+Coquimbo,Canela
+Coquimbo,Los Vilos
+Coquimbo,Salamanca
+Coquimbo,Ovalle
+Coquimbo,Combarbalá
+Coquimbo,Monte Patria
+Coquimbo,Punitaqui
+Coquimbo,Río Hurtado
+Valparaíso,Valparaíso
+Valparaíso,Casablanca
+Valparaíso,Concón
+Valparaíso,Juan Fernández
+Valparaíso,Puchuncaví
+Valparaíso,Quintero
+Valparaíso,Viña del Mar
+Valparaíso,Isla de Pascua
+Valparaíso,Los Andes
+Valparaíso,Calle Larga
+Valparaíso,Rinconada
+Valparaíso,San Esteban
+Valparaíso,La Ligua
+Valparaíso,Cabildo
+Valparaíso,Papudo
+Valparaíso,Petorca
+Valparaíso,Zapallar
+Valparaíso,Quillota
+Valparaíso,La Calera
+Valparaíso,Hijuelas
+Valparaíso,La Cruz
+Valparaíso,Nogales
+Valparaíso,San Antonio
+Valparaíso,Algarrobo
+Valparaíso,Cartagena
+Valparaíso,El Quisco
+Valparaíso,El Tabo
+Valparaíso,Santo Domingo
+Valparaíso,San Felipe
+Valparaíso,Catemu
+Valparaíso,Llaillay
+Valparaíso,Panquehue
+Valparaíso,Putaendo
+Valparaíso,Santa María
+Valparaíso,Quilpué
+Valparaíso,Limache
+Valparaíso,Olmué
+Valparaíso,Villa Alemana
+Valparaíso,Calera
+Región del Libertador Gral. Bernardo O'Higgins,Rancagua
+Región del Libertador Gral. Bernardo O'Higgins,Codegua
+Región del Libertador Gral. Bernardo O'Higgins,Coinco
+Región del Libertador Gral. Bernardo O'Higgins,Coltauco
+Región del Libertador Gral. Bernardo O'Higgins,Doñihue
+Región del Libertador Gral. Bernardo O'Higgins,Graneros
+Región del Libertador Gral. Bernardo O'Higgins,Las Cabras
+Región del Libertador Gral. Bernardo O'Higgins,Machalí
+Región del Libertador Gral. Bernardo O'Higgins,Malloa
+Región del Libertador Gral. Bernardo O'Higgins,Mostazal
+Región del Libertador Gral. Bernardo O'Higgins,Olivar
+Región del Libertador Gral. Bernardo O'Higgins,Peumo
+Región del Libertador Gral. Bernardo O'Higgins,Pichidegua
+Región del Libertador Gral. Bernardo O'Higgins,Quinta de Tilcoco
+Región del Libertador Gral. Bernardo O'Higgins,Rengo
+Región del Libertador Gral. Bernardo O'Higgins,Requínoa
+Región del Libertador Gral. Bernardo O'Higgins,San Vicente
+Región del Libertador Gral. Bernardo O'Higgins,Pichilemu
+Región del Libertador Gral. Bernardo O'Higgins,La Estrella
+Región del Libertador Gral. Bernardo O'Higgins,Litueche
+Región del Libertador Gral. Bernardo O'Higgins,Marchihue
+Región del Libertador Gral. Bernardo O'Higgins,Navidad
+Región del Libertador Gral. Bernardo O'Higgins,Paredones
+Región del Libertador Gral. Bernardo O'Higgins,San Fernando
+Región del Libertador Gral. Bernardo O'Higgins,Chépica
+Región del Libertador Gral. Bernardo O'Higgins,Chimbarongo
+Región del Libertador Gral. Bernardo O'Higgins,Lolol
+Región del Libertador Gral. Bernardo O'Higgins,Nancagua
+Región del Libertador Gral. Bernardo O'Higgins,Palmilla
+Región del Libertador Gral. Bernardo O'Higgins,Peralillo
+Región del Libertador Gral. Bernardo O'Higgins,Placilla
+Región del Libertador Gral. Bernardo O'Higgins,Pumanque
+Región del Libertador Gral. Bernardo O'Higgins,Santa Cruz
+Región del Maule,Talca
+Región del Maule,Constitución
+Región del Maule,Curepto
+Región del Maule,Empedrado
+Región del Maule,Maule
+Región del Maule,Pelarco
+Región del Maule,Pencahue
+Región del Maule,Río Claro
+Región del Maule,San Clemente
+Región del Maule,San Rafael
+Región del Maule,Cauquenes
+Región del Maule,Chanco
+Región del Maule,Pelluhue
+Región del Maule,Curicó
+Región del Maule,Hualañé
+Región del Maule,Licantén
+Región del Maule,Molina
+Región del Maule,Rauco
+Región del Maule,Romeral
+Región del Maule,Sagrada Familia
+Región del Maule,Teno
+Región del Maule,Vichuquén
+Región del Maule,Linares
+Región del Maule,Colbún
+Región del Maule,Longaví
+Región del Maule,Parral
+Región del Maule,Retiro
+Región del Maule,San Javier
+Región del Maule,Villa Alegre
+Región del Maule,Yerbas Buenas
+Región de Ñuble,Cobquecura
+Región de Ñuble,Coelemu
+Región de Ñuble,Ninhue
+Región de Ñuble,Portezuelo
+Región de Ñuble,Quirihue
+Región de Ñuble,Ránquil
+Región de Ñuble,Treguaco
+Región de Ñuble,Bulnes
+Región de Ñuble,Chillán Viejo
+Región de Ñuble,Chillán
+Región de Ñuble,El Carmen
+Región de Ñuble,Pemuco
+Región de Ñuble,Pinto
+Región de Ñuble,Quillón
+Región de Ñuble,San Ignacio
+Región de Ñuble,Yungay
+Región de Ñuble,Coihueco
+Región de Ñuble,Ñiquén
+Región de Ñuble,San Carlos
+Región de Ñuble,San Fabián
+Región de Ñuble,San Nicolás
+Región del Biobío,Concepción
+Región del Biobío,Coronel
+Región del Biobío,Chiguayante
+Región del Biobío,Florida
+Región del Biobío,Hualqui
+Región del Biobío,Lota
+Región del Biobío,Penco
+Región del Biobío,San Pedro de la Paz
+Región del Biobío,Santa Juana
+Región del Biobío,Talcahuano
+Región del Biobío,Tomé
+Región del Biobío,Hualpén
+Región del Biobío,Lebu
+Región del Biobío,Arauco
+Región del Biobío,Cañete
+Región del Biobío,Contulmo
+Región del Biobío,Curanilahue
+Región del Biobío,Los Álamos
+Región del Biobío,Tirúa
+Región del Biobío,Los Ángeles
+Región del Biobío,Antuco
+Región del Biobío,Cabrero
+Región del Biobío,Laja
+Región del Biobío,Mulchén
+Región del Biobío,Nacimiento
+Región del Biobío,Negrete
+Región del Biobío,Quilaco
+Región del Biobío,Quilleco
+Región del Biobío,San Rosendo
+Región del Biobío,Santa Bárbara
+Región del Biobío,Tucapel
+Región del Biobío,Yumbel
+Región del Biobío,Alto Biobío
+Región de la Araucanía,Temuco
+Región de la Araucanía,Carahue
+Región de la Araucanía,Cunco
+Región de la Araucanía,Curarrehue
+Región de la Araucanía,Freire
+Región de la Araucanía,Galvarino
+Región de la Araucanía,Gorbea
+Región de la Araucanía,Lautaro
+Región de la Araucanía,Loncoche
+Región de la Araucanía,Melipeuco
+Región de la Araucanía,Nueva Imperial
+Región de la Araucanía,Padre las Casas
+Región de la Araucanía,Perquenco
+Región de la Araucanía,Pitrufquén
+Región de la Araucanía,Pucón
+Región de la Araucanía,Saavedra
+Región de la Araucanía,Teodoro Schmidt
+Región de la Araucanía,Toltén
+Región de la Araucanía,Vilcún
+Región de la Araucanía,Villarrica
+Región de la Araucanía,Cholchol
+Región de la Araucanía,Angol
+Región de la Araucanía,Collipulli
+Región de la Araucanía,Curacautín
+Región de la Araucanía,Ercilla
+Región de la Araucanía,Lonquimay
+Región de la Araucanía,Los Sauces
+Región de la Araucanía,Lumaco
+Región de la Araucanía,Purén
+Región de la Araucanía,Renaico
+Región de la Araucanía,Traiguén
+Región de la Araucanía,Victoria
+Región de Los Ríos,Valdivia
+Región de Los Ríos,Corral
+Región de Los Ríos,Lanco
+Región de Los Ríos,Los Lagos
+Región de Los Ríos,Máfil
+Región de Los Ríos,Mariquina
+Región de Los Ríos,Paillaco
+Región de Los Ríos,Panguipulli
+Región de Los Ríos,La Unión
+Región de Los Ríos,Futrono
+Región de Los Ríos,Lago Ranco
+Región de Los Ríos,Río Bueno
+Región de Los Lagos,Puerto Montt
+Región de Los Lagos,Calbuco
+Región de Los Lagos,Cochamó
+Región de Los Lagos,Fresia
+Región de Los Lagos,Frutillar
+Región de Los Lagos,Los Muermos
+Región de Los Lagos,Llanquihue
+Región de Los Lagos,Maullín
+Región de Los Lagos,Puerto Varas
+Región de Los Lagos,Castro
+Región de Los Lagos,Ancud
+Región de Los Lagos,Chonchi
+Región de Los Lagos,Curaco de Vélez
+Región de Los Lagos,Dalcahue
+Región de Los Lagos,Puqueldón
+Región de Los Lagos,Queilén
+Región de Los Lagos,Quellón
+Región de Los Lagos,Quemchi
+Región de Los Lagos,Quinchao
+Región de Los Lagos,Osorno
+Región de Los Lagos,Puerto Octay
+Región de Los Lagos,Purranque
+Región de Los Lagos,Puyehue
+Región de Los Lagos,Río Negro
+Región de Los Lagos,San Juan de la Costa
+Región de Los Lagos,San Pablo
+Región de Los Lagos,Chaitén
+Región de Los Lagos,Futaleufú
+Región de Los Lagos,Hualaihué
+Región de Los Lagos,Palena
+Región de Aysén del Gral. Carlos Ibáñez del Campo,Coyhaique
+Región de Aysén del Gral. Carlos Ibáñez del Campo,Lago Verde
+Región de Aysén del Gral. Carlos Ibáñez del Campo,Aysén
+Región de Aysén del Gral. Carlos Ibáñez del Campo,Cisnes
+Región de Aysén del Gral. Carlos Ibáñez del Campo,Guaitecas
+Región de Aysén del Gral. Carlos Ibáñez del Campo,Cochrane
+Región de Aysén del Gral. Carlos Ibáñez del Campo,O'Higgins
+Región de Aysén del Gral. Carlos Ibáñez del Campo,Tortel
+Región de Aysén del Gral. Carlos Ibáñez del Campo,Chile Chico
+Región de Aysén del Gral. Carlos Ibáñez del Campo,Río Ibáñez
+Región de Magallanes y de la Antártica Chilena,Punta Arenas
+Región de Magallanes y de la Antártica Chilena,Laguna Blanca
+Región de Magallanes y de la Antártica Chilena,Río Verde
+Región de Magallanes y de la Antártica Chilena,San Gregorio
+Región de Magallanes y de la Antártica Chilena,Cabo de Hornos
+Región de Magallanes y de la Antártica Chilena,Antártica
+Región de Magallanes y de la Antártica Chilena,Porvenir
+Región de Magallanes y de la Antártica Chilena,Primavera
+Región de Magallanes y de la Antártica Chilena,Timaukel
+Región de Magallanes y de la Antártica Chilena,Natales
+Región de Magallanes y de la Antártica Chilena,Torres del Paine
+Región Metropolitana de Santiago,Cerrillos
+Región Metropolitana de Santiago,Cerro Navia
+Región Metropolitana de Santiago,Conchalí
+Región Metropolitana de Santiago,El Bosque
+Región Metropolitana de Santiago,Estación Central
+Región Metropolitana de Santiago,Huechuraba
+Región Metropolitana de Santiago,Independencia
+Región Metropolitana de Santiago,La Cisterna
+Región Metropolitana de Santiago,La Florida
+Región Metropolitana de Santiago,La Granja
+Región Metropolitana de Santiago,La Pintana
+Región Metropolitana de Santiago,La Reina
+Región Metropolitana de Santiago,Las Condes
+Región Metropolitana de Santiago,Lo Barnechea
+Región Metropolitana de Santiago,Lo Espejo
+Región Metropolitana de Santiago,Lo Prado
+Región Metropolitana de Santiago,Macul
+Región Metropolitana de Santiago,Maipú
+Región Metropolitana de Santiago,Ñuñoa
+Región Metropolitana de Santiago,Pedro Aguirre Cerda
+Región Metropolitana de Santiago,Peñalolén
+Región Metropolitana de Santiago,Providencia
+Región Metropolitana de Santiago,Pudahuel
+Región Metropolitana de Santiago,Quilicura
+Región Metropolitana de Santiago,Quinta Normal
+Región Metropolitana de Santiago,Recoleta
+Región Metropolitana de Santiago,Renca
+Región Metropolitana de Santiago,San Joaquín
+Región Metropolitana de Santiago,San Miguel
+Región Metropolitana de Santiago,San Ramón
+Región Metropolitana de Santiago,Vitacura
+Región Metropolitana de Santiago,Puente Alto
+Región Metropolitana de Santiago,Pirque
+Región Metropolitana de Santiago,San José de Maipo
+Región Metropolitana de Santiago,Buin
+Región Metropolitana de Santiago,Calera de Tango
+Región Metropolitana de Santiago,Paine
+Región Metropolitana de Santiago,San Bernardo
+Región Metropolitana de Santiago,Alhué
+Región Metropolitana de Santiago,Curacaví
+Región Metropolitana de Santiago,María Pinto
+Región Metropolitana de Santiago,Melipilla
+Región Metropolitana de Santiago,San Pedro
+Región Metropolitana de Santiago,Talagante
+Región Metropolitana de Santiago,El Monte
+Región Metropolitana de Santiago,Isla de Maipo
+Región Metropolitana de Santiago,Padre Hurtado
+Región Metropolitana de Santiago,Peñaflor
+Región Metropolitana de Santiago,Colina
+Región Metropolitana de Santiago,Lampa
+Región Metropolitana de Santiago,Tiltil
+Región Metropolitana de Santiago,Santiago
+Región Metropolitana de Santiago,Villa Alhue
+Región Metropolitana de Santiago,Pedro Aguirre C

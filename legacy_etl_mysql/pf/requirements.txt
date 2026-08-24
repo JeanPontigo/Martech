@@ -1,0 +1,23 @@
+# ───────────────────────── núcleo ─────────────────────────
+numpy               >=1.26.4,<2.0
+pandas              >=2.2.0
+python-dateutil     >=2.9
+pytz                >=2024.1
+
+# ───────────────────────── red / http ─────────────────────
+requests            >=2.31
+urllib3             >=1.26,<3.0
+certifi             >=2024.12.14
+
+# ───────────────────────── base de datos ──────────────────
+SQLAlchemy          >=2.0
+PyMySQL             >=1.1
+
+# ───────────────────────── utilidades ─────────────────────
+python-dotenv       >=1.0
+
+# ────────── eliminadas respecto al requirements original ──
+# pqdm     → reemplazado por ThreadPoolExecutor nativo
+# tqdm     → reemplazado por logging estructurado
+# bounded-pool-executor → reemplazado por Semaphore nativo
+# DateTime / zope.interface → no usadas en el pipeline

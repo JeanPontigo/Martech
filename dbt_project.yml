@@ -1,0 +1,20 @@
+name: 'martech_atlas'
+version: '1.0.0'
+config-version: 2
+
+profile: 'martech_atlas'
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["seed"]
+
+models:
+  martech_atlas:
+    staging:
+      +materialized: view
+      +schema: staging
+    silver:
+      +materialized: incremental
+    gold:
+      +materialized: table
+      +schema: gold

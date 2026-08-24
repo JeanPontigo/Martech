@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: bronze
+    project: martech-data-platform-atlas
+    dataset: bronze
+    tables:
+      - name: ecommerce
+      - name: email_mailup
+
+  - name: ga4_pf
+    project: martech-data-platform-atlas
+    dataset: analytics_479606051
+    tables:
+      - name: events
+        identifier: "events_*"
+
+  - name: silver
+    project: martech-data-platform-atlas
+    dataset: silver
+    tables:
+      - name: skus_campanas_pf
