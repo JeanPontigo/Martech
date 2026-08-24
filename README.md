@@ -1,2 +1,10 @@
 # martech-dbt-atlas
 Para modelos dbt Silver y Gold
+# MARTECH DBT ATLAS
+
+## Integrantes
+- PONTIGO GARRIDO JEAN CARLOS ALBERTO
+- URBINA FUENTES RODRIGO BENJAMIN
+- VERGARA CORONADO JAIME ANDRES
+
+---
