@@ -1,0 +1,17 @@
+# ───────────────────────── núcleo ─────────────────────────
+numpy               >=1.26.4,<2.0
+pandas              >=2.2.0
+python-dateutil     >=2.9
+pytz                >=2024.1
+# ───────────────────────── red / http ─────────────────────
+requests            >=2.31
+urllib3             >=1.26,<3.0
+certifi             >=2024.12.14
+# ───────────────────────── GCP / BigQuery ─────────────────
+google-cloud-bigquery >=3.42.0
+google-cloud-pubsub   >=2.21.0
+google-auth           >=2.55.0
+pyarrow               >=14.0
+pandas-gbq            >=0.26.1
+# ───────────────────────── utilidades ─────────────────────
+python-dotenv       >=1.0
