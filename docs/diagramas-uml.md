@@ -1,3 +1,4 @@
+
 # Diagramas UML — Proyecto MarTech (ATLAS)
 
 ## 1. Diagrama de componentes
@@ -47,10 +48,10 @@ flowchart TB
 
 ```mermaid
 sequenceDiagram
-    participant S as Cloud Scheduler<br/>(04:00 America/Santiago)
-    participant R as Cloud Run Job<br/>(extractor tenant)
+    participant S as Cloud Scheduler (04:00 America/Santiago)
+    participant R as Cloud Run Job (extractor tenant)
     participant M as Magento REST API
-    participant B as BigQuery<br/>(bronze + state/logs)
+    participant B as BigQuery (bronze + state/logs)
     participant P as Pub/Sub
     participant F as Cloud Function
     participant D as dbt Cloud
@@ -84,5 +85,6 @@ sequenceDiagram
     M-->>R: 200 OK
     R->>B: append parcial a bronze
     R->>B: log estado=error (entidad, página)
-    Note over R,B: el watermark NO avanza en entidades fallidas;<br/>la próxima corrida reintenta el delta pendiente
+    Note over R,B: el watermark NO avanza en entidades fallidas
+    Note over R,B: la próxima corrida reintenta el delta pendiente
 ```
