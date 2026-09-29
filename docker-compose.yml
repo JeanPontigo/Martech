@@ -1,0 +1,55 @@
+# docker-compose.yml — Proyecto MarTech / Plataforma ATLAS
+#
+# Levanta los 3 extractores (uno por tenant) como contenedores independientes.
+# Cada servicio usa su propio Dockerfile dentro de pipelines/<tenant>/.
+#
+# Uso:
+#   cp .env.example .env        # completar valores reales (no commitear)
+#   docker-compose build
+#   docker-compose run --rm pipeline-pf
+#   docker-compose run --rm pipeline-mc
+#   docker-compose run --rm pipeline-aatn
+#   # o solo una entidad:
+#   docker-compose run --rm pipeline-pf python3 main_gcp.py --entity orders
+
+version: "3.9"
+
+services:
+  pipeline-pf:
+    build:
+      context: ./pipelines/pf
+      dockerfile: Dockerfile
+    image: martech-pipeline-pf:latest
+    env_file:
+      - .env
+    environment:
+      - TENANT_ID=pf
+      - PYTHONUNBUFFERED=1
+    command: ["python3", "main_gcp.py", "--entity", "all"]
+    restart: "no"
+
+  pipeline-mc:
+    build:
+      context: ./pipelines/mc
+      dockerfile: Dockerfile
+    image: martech-pipeline-mc:latest
+    env_file:
+      - .env
+    environment:
+      - TENANT_ID=mc
+      - PYTHONUNBUFFERED=1
+    command: ["python", "main_gcp_carozzi.py"]
+    restart: "no"
+
+  pipeline-aatn:
+    build:
+      context: ./pipelines/aatn
+      dockerfile: Dockerfile
+    image: martech-pipeline-aatn:latest
+    env_file:
+      - .env
+    environment:
+      - TENANT_ID=aatn
+      - PYTHONUNBUFFERED=1
+    command: ["python3", "main_gcp_ariztia.py", "--entity", "all"]
+    restart: "no"
