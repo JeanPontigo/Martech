@@ -91,9 +91,9 @@ cp .env.example .env
 
 | Integrante | Rol |
 |---|---|
-| Jean Carlos Pontigo | Líder técnico — pipelines de extracción en GCP, repositorio y despliegue |
+| Jaime Vergara | Líder técnico — pipelines de extracción en GCP, repositorio y despliegue |
 | Rodrigo Urbina | Modelado y transformación de datos (dbt: staging/silver/gold) |
-| Jaime Vergara | Documentación, QA y validación de datos |
+| Jean Carlos Pontigo | Documentación, QA y validación de datos |
 
 *(Distribución de referencia del equipo; el aporte detallado por persona consta en el historial de commits del repositorio.)*
 
