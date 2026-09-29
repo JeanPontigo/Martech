@@ -5,7 +5,7 @@
 
 ---
 
-## Sprint 1 — Fundaciones e ingesta PF ✅ Completado
+## Sprint 1 — Fundaciones e ingesta PF  Completado
 
 **Objetivo:** repositorio operativo y primera extracción diaria del tenant PF.
 
@@ -17,7 +17,7 @@
 | S1-04 | `Dockerfile` y `requirements.txt` del pipeline PF | JP | Completado |
 | S1-05 | Prueba de carga inicial y validación de conteos contra Magento | RU | Completado |
 
-## Sprint 2 — Transformación dbt y tenant Carozzi ✅ Completado
+## Sprint 2 — Transformación dbt y tenant Carozzi  Completado
 
 **Objetivo:** capa Silver/Gold funcional y segundo tenant con email.
 
@@ -30,7 +30,7 @@
 | S2-05 | Incidente: Cloudflare bloqueaba las llamadas a Cloud Run — diagnóstico y mitigación | JV | Completado |
 | S2-06 | Macros `normalize_string`, `ga4_param`, `generate_schema_name` | JP | Completado |
 
-## Sprint 3 — Tenant Ariztía, Gold y visualización 🔄 En curso
+## Sprint 3 — Tenant Ariztía, Gold y visualización  En curso
 
 **Objetivo:** tercer tenant operativo y modelos de negocio consumibles.
 
@@ -43,7 +43,7 @@
 | S3-05 | Corrección: `.env` quedaba dentro de la imagen Docker — agregar `.dockerignore` y reconstruir | JP | En curso |
 | S3-06 | Estabilizar trigger post-extracción (la Cloud Function resultó poco confiable como disparador) | JV | En curso |
 
-## Sprint 4 — Endurecimiento y cierre 📋 Planificado
+## Sprint 4 — Endurecimiento y cierre  Planificado
 
 **Objetivo:** plataforma auditable y lista para entrega.
 
