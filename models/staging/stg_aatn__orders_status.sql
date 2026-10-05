@@ -30,6 +30,8 @@ SELECT
     -- sin confirmar contra JSON real — mismo mapeo que pf como supuesto.
     JSON_VALUE(raw_json, '$.status')                                                 AS status,
 
+    DATETIME(TIMESTAMP(JSON_VALUE(raw_json, '$.created_at')))                        AS created_at_utc,
+
     DATETIME(TIMESTAMP(JSON_VALUE(raw_json, '$.updated_at')))                        AS updated_at
 
 FROM bronze
