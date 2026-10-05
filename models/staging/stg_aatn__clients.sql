@@ -22,9 +22,9 @@ SELECT
     ingested_at,
 
     -- Identificadores
-    JSON_VALUE(raw_json, '$.entity_id')                                 AS client_id,
+    JSON_VALUE(raw_json, '$.sap_id')                                    AS client_id,
     JSON_VALUE(raw_json, '$.adobe_id')                                  AS adobe_id,
-    JSON_VALUE(raw_json, '$.sap_id')                                    AS erp_id,
+    JSON_VALUE(raw_json, '$.sap_id')                                    AS erp_id,  
     JSON_VALUE(raw_json, '$.rut_company')                               AS tax_id,
 
     -- Perfil y Datos de Contacto
