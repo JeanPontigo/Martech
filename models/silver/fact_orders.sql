@@ -189,6 +189,29 @@ aatn_base_deduped AS (
     WHERE rn = 1
 ),
 
+aatn_created_at_nativo AS (
+    SELECT
+        order_id,
+        MIN(created_at_utc) AS created_at_utc
+    FROM {{ ref('stg_aatn__orders_status') }}
+    WHERE order_id IN (SELECT order_id FROM aatn_base_deduped)
+    GROUP BY order_id
+),
+
+-- Fallback para las ~318 órdenes sin contraparte en el nativo: se
+-- reconstruye el instante desde el custom declarando su offset -04:00.
+aatn_base_con_fecha AS (
+    SELECT
+        b.*,
+        COALESCE(
+            n.created_at_utc,
+            DATETIME(TIMESTAMP(b.created_at_local, '-04:00'))
+        ) AS created_at_utc
+    FROM aatn_base_deduped b
+    LEFT JOIN aatn_created_at_nativo n
+        ON b.order_id = n.order_id
+),
+
 -- =========================================================================
 -- AATN — combinar base + overlay de status
 -- =========================================================================
@@ -202,10 +225,10 @@ aatn_final AS (
         b.incremental_id,
         CAST(b.erp_id AS STRING)                                                    AS erp_id,
         CAST(b.gifcard_code AS STRING)                                              AS gifcard_code,
-        b.created_at_local                                                          AS created_at,
-        b.created_at_local                                                          AS created_at_chile,
+        b.created_at_utc                                                            AS created_at,
+        DATETIME(TIMESTAMP(b.created_at_utc), 'America/Santiago')                   AS created_at_chile,
         COALESCE(s.status, b.status)                                                AS status,
-        COALESCE(s.updated_at, b.created_at_local)                                  AS updated_at,
+        COALESCE(s.updated_at, b.created_at_utc)                                    AS updated_at,
         b.subtotal_net,
         b.discount_amount,
         b.discount_pct,
@@ -218,7 +241,7 @@ aatn_final AS (
         b.ciudad_compra,
         b.bronze_id,
         GREATEST(b.ingested_at, COALESCE(s.ingested_at, b.ingested_at))             AS ingested_at
-    FROM aatn_base_deduped b
+    FROM aatn_base_con_fecha b
     LEFT JOIN aatn_status_latest s
         ON b.order_id = s.order_id
 ),
