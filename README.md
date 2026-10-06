@@ -101,16 +101,7 @@ cp .env.example .env
 
 El proyecto se gestionó con **Scrum**: sprints cortos, backlog priorizado por valor de negocio y ceremonias de planificación, revisión y retrospectiva. Ver justificación completa en [`docs/metodologia.md`](./docs/metodologia.md).
 
-## 7. Arquitectura
 
-Pipeline diario (04:00 hora de Chile):
-
-```
-Cloud Scheduler → Cloud Run (extractores por tenant) → BigQuery Bronze
-    → Pub/Sub → Cloud Function → dbt Cloud (Silver/Gold) → Looker Studio
-```
-
-Detalle, diagramas y decisiones en [`docs/arquitectura.md`](./docs/arquitectura.md). Modelo de datos en [`docs/modelo-datos.md`](./docs/modelo-datos.md).
 
 
 - [`docs/plan-de-pruebas.md`](./docs/plan-de-pruebas.md) — plan de pruebas
