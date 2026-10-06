@@ -89,11 +89,11 @@ cp .env.example .env
 
 ## 5. Integrantes y roles
 
-| Integrante | Rol | Username
-|---|---|
-| Jaime Vergara | Líder técnico — pipelines de extracción en GCP, repositorio y despliegue | relaxcode425
-| Rodrigo Urbina | Modelado y transformación de datos (dbt: staging/silver/gold) | shanshurbi
-| Jean Carlos Pontigo | Documentación, QA y validación de datos | JeanPontigo
+| Integrante | Rol | Username |
+|---|---|---|
+| Jaime Vergara | Líder técnico — pipelines de extracción en GCP, repositorio y despliegue | relaxcode425 |
+| Rodrigo Urbina | Modelado y transformación de datos (dbt: staging/silver/gold) | shanshurbi |
+| Jean Carlos Pontigo | Documentación, QA y validación de datos | JeanPontigo |
 
 *(Distribución de referencia del equipo; el aporte detallado por persona consta en el historial de commits del repositorio.)*
 
