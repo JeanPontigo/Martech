@@ -112,13 +112,7 @@ Cloud Scheduler → Cloud Run (extractores por tenant) → BigQuery Bronze
 
 Detalle, diagramas y decisiones en [`docs/arquitectura.md`](./docs/arquitectura.md). Modelo de datos en [`docs/modelo-datos.md`](./docs/modelo-datos.md).
 
-## 8. Documentación adicional
 
-- [`docs/arquitectura.md`](./docs/arquitectura.md) — arquitectura y diagrama del pipeline
-- [`docs/modelo-datos.md`](./docs/modelo-datos.md) — diagrama entidad-relación
-- [`docs/diagramas-uml.md`](./docs/diagramas-uml.md) — diagramas de componentes y secuencia
-- [`docs/requisitos-no-funcionales.md`](./docs/requisitos-no-funcionales.md) — RNF
-- [`docs/manual-tecnico.md`](./docs/manual-tecnico.md) — despliegue y operación
 - [`docs/plan-de-pruebas.md`](./docs/plan-de-pruebas.md) — plan de pruebas
 - [`docs/innovacion.md`](./docs/innovacion.md) — innovación vs. sistema legacy
 - [`docs/metodologia.md`](./docs/metodologia.md) — justificación de Scrum
