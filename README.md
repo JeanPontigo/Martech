@@ -104,7 +104,3 @@ El proyecto se gestionó con **Scrum**: sprints cortos, backlog priorizado por v
 
 
 
-- [`docs/plan-de-pruebas.md`](./docs/plan-de-pruebas.md) — plan de pruebas
-- [`docs/innovacion.md`](./docs/innovacion.md) — innovación vs. sistema legacy
-- [`docs/metodologia.md`](./docs/metodologia.md) — justificación de Scrum
-- [`docs/alcance-mvp.md`](./docs/alcance-mvp.md) — alcance del MVP
