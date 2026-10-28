@@ -20,7 +20,10 @@ SELECT
     fe.click_count,
     fe.bounced_count,
     fe.unsubscribed_count
-FROM {{ source('silver', 'skus_campanas_pf') }} sc
+FROM (
+    SELECT DISTINCT id_campaign, nombre_campaign
+    FROM {{ source('silver', 'skus_campanas_pf') }}
+) sc
 JOIN {{ ref('fact_email') }} fe
     ON sc.nombre_campaign = fe.campaign_name
     AND fe.tenant_id = 'PF'

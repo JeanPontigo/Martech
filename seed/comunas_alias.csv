@@ -1,0 +1,95 @@
+region,nombre,tipo
+Región Metropolitana de Santiago,Maipo,provincia
+Región Metropolitana de Santiago,Estacion Centra,truncado
+Región Metropolitana de Santiago,Cordillera,provincia
+Región Metropolitana de Santiago,Chacabuco,provincia
+Región Metropolitana de Santiago,Batuco,localidad
+Región Metropolitana de Santiago,Barrancas,localidad
+Región Metropolitana de Santiago,Santiago Centro,localidad
+Región Metropolitana de Santiago,Hospital,localidad
+Región Metropolitana de Santiago,Independecia,typo
+Región Metropolitana de Santiago,Malloco,localidad
+Región Metropolitana de Santiago,Cerrilos,typo
+Región Metropolitana de Santiago,Pomaire,localidad
+Región Metropolitana de Santiago,Mallarauco,localidad
+Región Metropolitana de Santiago,San Berbardo,typo
+Valparaíso,Marga Marga,provincia
+Valparaíso,San Felipe De Aconcagua,provincia
+Valparaíso,Llolleo,localidad
+Valparaíso,Llay Llay,alias
+Valparaíso,Limache Centro,localidad
+Valparaíso,Quipue,typo
+Valparaíso,Quebrada Alvarado Olmue,localidad
+Valparaíso,Limachito,localidad
+Valparaíso,Curimon,localidad
+Coquimbo,Choapa,provincia
+Coquimbo,Elqui,provincia
+Coquimbo,Limari,provincia
+Coquimbo,Paihuano,alias
+Coquimbo,Palqui,localidad
+Coquimbo,Quebrada De Talca,localidad
+Coquimbo,Quilimari,localidad
+Coquimbo,Cuncumen,localidad
+Coquimbo,Las Compañias,localidad
+Región de Los Lagos,Alerce,localidad
+Región de Los Lagos,Bosquemar,localidad
+Región de Los Lagos,Entre Lagos,localidad
+Región de Los Lagos,Mirasol,localidad
+Región de Los Lagos,Puerta Sur,localidad
+Región de Los Lagos,Quenuir,localidad
+Región de Los Lagos,La Vara,localidad
+Región de Los Lagos,Nueva Braunau,localidad
+Región de Los Lagos,Ruta 215 Km 21 Puyehue,direccion
+Región de Los Lagos,Rahue Alto,localidad
+Región del Biobío,Monte Aguila,localidad
+Región del Biobío,Monteaguila,localidad
+Región del Biobío,Hualpencillo,localidad
+Región del Biobío,Higueras Talcahuano,localidad
+Región del Biobío,San Pedro De La,truncado
+Región del Biobío,Biobio,provincia
+Región del Biobío,Region Del Bio Bio,region
+Región del Biobío,Lirquen,localidad
+Región del Biobío,Dichato,localidad
+Región del Biobío,Arenal Talcahuano,localidad
+Región del Biobío,Ruta 5 Sur Cabrero,direccion
+Región del Biobío,Cantera,localidad
+Región de Ñuble,Diguillin,provincia
+Región de Ñuble,Punilla,provincia
+Región de Ñuble,Itata,provincia
+Región de Ñuble,Pueblo Seco,localidad
+Región de Ñuble,Nipas,localidad
+Región de Ñuble,Rucapequen,localidad
+Región de Ñuble,Buchupureo,localidad
+Región de Ñuble,Ranqui,alias
+Región de la Araucanía,Cautin,provincia
+Región de la Araucanía,Malleco,provincia
+Región de la Araucanía,Chol Chol,alias
+Región de la Araucanía,Cherquenco,localidad
+Región de la Araucanía,Lican Ray,localidad
+Región de la Araucanía,Cajon,localidad
+Región de la Araucanía,Puerto Saavedra,localidad
+Región de la Araucanía,Queule,localidad
+Región de la Araucanía,Pailahueque,localidad
+Región de la Araucanía,Choroico Cunco,localidad
+Región de Los Ríos,Conaripe,localidad
+Región de Los Ríos,Niebla,localidad
+Región de Los Ríos,Malalhue,localidad
+Región de Los Ríos,Valdiva,typo
+Región de Los Ríos,Ranco,alias
+Región de Los Ríos,Melefquen,localidad
+Región de Los Ríos,Ciruelos,localidad
+Región del Maule,Cumpeo,localidad
+Región del Maule,Lontue,localidad
+Región del Maule,Curanipe,localidad
+Región del Maule,Santa Olga,localidad
+Región del Maule,Maule Norte,zona
+Región del Maule,Maule Centro,zona
+Región del Libertador Gral. Bernardo O'Higgins,Marchigue,alias
+Región del Libertador Gral. Bernardo O'Higgins,Colchagua,provincia
+Región del Libertador Gral. Bernardo O'Higgins,San Vicente De Tagua Tagua,alias
+Región del Libertador Gral. Bernardo O'Higgins,Chepica  Chepica,typo
+Región del Libertador Gral. Bernardo O'Higgins,Bucalemu- Paredones,localidad
+Atacama,Salado,localidad
+Atacama,Diego Almagro,alias
+Tarapacá,Pozo Al Monte,truncado
+Antofagasta,Chiu Chiu,localidad

@@ -17,8 +17,9 @@ orders AS (
     SELECT
         order_id,
         tenant_id,
-        created_at
+        created_at_chile
     FROM {{ ref('fact_orders') }}
+    WHERE status_norm = 'pagada'
 ),
 items AS (
     SELECT
@@ -44,7 +45,7 @@ joined AS (
     SELECT
         p.category_name                     AS category,
         p.subcategory_name                  AS sub_category,
-        o.created_at                        AS fecha,
+        o.created_at_chile                  AS fecha,
         oi.line_total_net,
         oi.qty_ordered,
         oi.order_id,

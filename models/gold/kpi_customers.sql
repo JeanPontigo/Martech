@@ -3,6 +3,10 @@
 -- Granularidad: snapshot diario — una fila por dia + tenant
 -- Foto del estado de la base de clientes en cada corrida
 
+-- ADVERTENCIA: modelo snapshot — cada corrida captura el estado del día.
+-- NUNCA correr con --full-refresh: se pierde todo el histórico y no se
+-- puede recalcular, porque las fotos de días pasados ya no existen.
+
 {{
     config(
         materialized='incremental',
@@ -37,19 +41,19 @@ c360 AS (
 metrics AS (
     SELECT
         tenant_id,
-        CURRENT_DATE('UTC')                                                     AS date,
+        CURRENT_DATE('America/Santiago')                                                     AS date,
 
         -- Total clientes con al menos una orden
         COUNT(DISTINCT client_id)                                               AS total_customers,
 
         -- Clientes activos — ultima compra en ultimos 90 dias
         COUNTIF(
-            DATE_DIFF(CURRENT_DATE('UTC'), last_purchase, DAY) <= 90
+            DATE_DIFF(CURRENT_DATE('America/Santiago'), last_purchase, DAY) <= 90
         )                                                                       AS total_active,
 
         -- Clientes nuevos — primera compra en ultimos 30 dias
         COUNTIF(
-            DATE_DIFF(CURRENT_DATE('UTC'), first_purchase, DAY) <= 30
+            DATE_DIFF(CURRENT_DATE('America/Santiago'), first_purchase, DAY) <= 30
         )                                                                       AS new_customers,
 
         -- Clientes recurrentes — mas de 1 orden
@@ -58,7 +62,7 @@ metrics AS (
         -- Churn rate — sin compra en 90 dias / total
         ROUND(
             SAFE_DIVIDE(
-                COUNTIF(DATE_DIFF(CURRENT_DATE('UTC'), last_purchase, DAY) > 90),
+                COUNTIF(DATE_DIFF(CURRENT_DATE('America/Santiago'), last_purchase, DAY) > 90),
                 COUNT(DISTINCT client_id)
             ), 4
         )                                                                       AS churn_rate,
@@ -66,7 +70,7 @@ metrics AS (
         -- Retention rate — 1 - churn_rate
         ROUND(
             1 - SAFE_DIVIDE(
-                COUNTIF(DATE_DIFF(CURRENT_DATE('UTC'), last_purchase, DAY) > 90),
+                COUNTIF(DATE_DIFF(CURRENT_DATE('America/Santiago'), last_purchase, DAY) > 90),
                 COUNT(DISTINCT client_id)
             ), 4
         )                                                                       AS retention_rate,
@@ -74,7 +78,7 @@ metrics AS (
         -- LTV promedio de clientes activos
         ROUND(
             AVG(CASE
-                WHEN DATE_DIFF(CURRENT_DATE('UTC'), last_purchase, DAY) <= 90
+                WHEN DATE_DIFF(CURRENT_DATE('America/Santiago'), last_purchase, DAY) <= 90
                 THEN total_revenue
             END), 2
         )                                                                       AS avg_ltv

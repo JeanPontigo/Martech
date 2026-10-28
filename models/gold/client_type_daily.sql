@@ -20,9 +20,10 @@ first_purchase AS (
     SELECT
         tenant_id,
         client_id,
-        MIN(DATE(created_at))                           AS first_purchase_date,
-        DATE_TRUNC(MIN(DATE(created_at)), MONTH)        AS first_purchase_month
+        MIN(DATE(created_at_chile))                     AS first_purchase_date,
+        DATE_TRUNC(MIN(DATE(created_at_chile)), MONTH)        AS first_purchase_month
     FROM {{ ref('fact_orders') }}
+    WHERE status_norm = 'pagada'
     GROUP BY tenant_id, client_id
 ),
 
@@ -32,15 +33,15 @@ first_purchase AS (
 clientes_por_dia AS (
     SELECT
         o.tenant_id,
-        DATE(o.created_at)                              AS fecha,
+        DATE(o.created_at_chile)                        AS fecha,
         o.client_id,
         CASE
-            WHEN DATE_TRUNC(DATE(o.created_at), MONTH) = fp.first_purchase_month
+            WHEN DATE_TRUNC(DATE(o.created_at_chile), MONTH) = fp.first_purchase_month
             THEN 'Nuevo'
             ELSE 'Recurrente'
         END                                             AS tipo_cliente_mes,
         CASE
-            WHEN DATE(o.created_at) = fp.first_purchase_date
+            WHEN DATE(o.created_at_chile) = fp.first_purchase_date
             THEN 'Nuevo'
             ELSE 'Recurrente'
         END                                             AS tipo_cliente_dia
@@ -48,11 +49,12 @@ clientes_por_dia AS (
     JOIN first_purchase fp
         ON o.client_id = fp.client_id
         AND o.tenant_id = fp.tenant_id
-    WHERE DATE(o.created_at) >= DATE_TRUNC(DATE_SUB(CURRENT_DATE(), INTERVAL 11 MONTH), MONTH)
-    AND DATE(o.created_at) <= LAST_DAY(CURRENT_DATE())
+    WHERE DATE(o.created_at_chile) >= DATE_TRUNC(DATE_SUB(CURRENT_DATE('America/Santiago'), INTERVAL 11 MONTH), MONTH)
+    AND DATE(o.created_at_chile) <= LAST_DAY(CURRENT_DATE('America/Santiago'))
+    AND o.status_norm = 'pagada'
     QUALIFY ROW_NUMBER() OVER (
-        PARTITION BY o.tenant_id, o.client_id, DATE(o.created_at)
-        ORDER BY CASE WHEN DATE(o.created_at) = fp.first_purchase_date THEN 0 ELSE 1 END
+        PARTITION BY o.tenant_id, o.client_id, DATE(o.created_at_chile)
+        ORDER BY CASE WHEN DATE(o.created_at_chile) = fp.first_purchase_date THEN 0 ELSE 1 END
     ) = 1
 )
 

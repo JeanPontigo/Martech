@@ -2,6 +2,16 @@
 -- Fuente: silver.fact_order_items + silver.fact_orders + silver.dim_product
 -- Granularidad: una fila por SKU por dia por tenant
 -- Metricas de rendimiento de productos
+
+-- total_units_sold cuenta todas las unidades movidas, incluidas las que
+-- vienen dentro de un pack. En Magento el padre del pack (product_type =
+-- 'bundle') lleva el dinero y como cantidad el numero de packs; los hijos
+-- llevan las unidades reales con monto cero. Por eso:
+--   - avg_unit_price divide por unidades_facturadas, no por total_units_sold
+--   - sumar total_units_sold ENTRE SKUs cuenta doble (packs + unidades):
+--     para eso, excluir product_type = 'bundle'
+-- Solo aplica a mc. pf no tiene packs; el custom de aatn no entrega
+-- product_type, asi que ahi llega NULL y no se puede distinguir.
 {{
     config(
         materialized='table',
@@ -18,14 +28,16 @@ orders AS (
         order_id,
         tenant_id,
         client_id,
-        DATE(created_at) AS fecha
+        DATE(created_at_chile) AS fecha
     FROM {{ ref('fact_orders') }}
+    WHERE status_norm = 'pagada'
 ),
 items AS (
     SELECT
         order_id,
         tenant_id,
         sku,
+        product_type,
         qty_ordered,
         line_total_net,
         discount_amount
@@ -51,6 +63,7 @@ joined AS (
         o.order_id,
         o.client_id,
         i.sku,
+        i.product_type,
         i.qty_ordered,
         i.line_total_net,
         i.discount_amount
@@ -65,11 +78,16 @@ aggregated AS (
         tenant_id,
         fecha,
         sku,
+        MAX(product_type)                                           AS product_type,
         COUNT(DISTINCT order_id)                                    AS total_orders,
         COUNT(DISTINCT client_id)                                   AS unique_customers,
         SUM(qty_ordered)                                            AS total_units_sold,
+        SUM(IF(line_total_net > 0, qty_ordered, 0))                 AS unidades_facturadas,
         SUM(line_total_net)                                         AS total_revenue,
-        ROUND(SAFE_DIVIDE(SUM(line_total_net), SUM(qty_ordered)), 2) AS avg_unit_price,
+        ROUND(SAFE_DIVIDE(
+            SUM(line_total_net),
+            SUM(IF(line_total_net > 0, qty_ordered, 0))
+        ), 2)                                                       AS avg_unit_price,
         SUM(discount_amount)                                        AS total_discount
     FROM joined
     GROUP BY tenant_id, fecha, sku
@@ -82,6 +100,7 @@ with_product AS (
         a.tenant_id,
         a.fecha,
         a.sku,
+        a.product_type,
         p.sku_name,
         p.brand,
         p.category_name     AS category,
@@ -89,6 +108,7 @@ with_product AS (
         a.total_orders,
         a.unique_customers,
         a.total_units_sold,
+        a.unidades_facturadas,
         a.total_revenue,
         a.avg_unit_price,
         a.total_discount
@@ -109,6 +129,7 @@ SELECT
     tenant_id,
     fecha,
     sku,
+    product_type,
     sku_name,
     brand,
     category,
@@ -116,6 +137,7 @@ SELECT
     total_orders,
     unique_customers,
     total_units_sold,
+    unidades_facturadas,
     total_revenue,
     avg_unit_price,
     total_discount,

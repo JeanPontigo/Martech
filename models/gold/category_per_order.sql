@@ -14,10 +14,11 @@ WITH categorias_por_orden AS (
         o.order_id,
         o.tenant_id,
         o.client_id,
-        o.created_at,
+        o.created_at_chile,
         o.subtotal_net,
-        FORMAT_DATE('%Y-%m', DATE(o.created_at))        AS mes,
+        FORMAT_DATE('%Y-%m', DATE(o.created_at_chile))         AS mes,
         COUNT(DISTINCT p.category_name)                  AS categorias_distintas,
+        COUNT(DISTINCT p.subcategory_name)               AS subcategorias_distintas,
         COUNT(DISTINCT oi.sku)                           AS sku_distintos,
         SUM(oi.qty_ordered)                              AS unidades
     FROM {{ ref('fact_orders') }} o
@@ -25,15 +26,17 @@ WITH categorias_por_orden AS (
         ON o.order_id = oi.order_id AND o.tenant_id = oi.tenant_id
     LEFT JOIN {{ ref('dim_product') }} p
         ON oi.sku = p.sku AND oi.tenant_id = p.tenant_id
-    GROUP BY o.order_id, o.tenant_id, o.client_id, o.created_at, o.subtotal_net,
-             FORMAT_DATE('%Y-%m', DATE(o.created_at))
+    WHERE o.status_norm = 'pagada'
+    GROUP BY o.order_id, o.tenant_id, o.client_id, o.created_at_chile, o.subtotal_net,
+             FORMAT_DATE('%Y-%m', DATE(o.created_at_chile))
 )
 SELECT
     tenant_id,
     mes,
-    MIN(created_at)                                      AS created_at,
+    MIN(created_at_chile)                                AS created_at,
     COUNT(*)                                             AS ordenes,
     ROUND(AVG(categorias_distintas), 2)                  AS categorias_por_orden,
+    ROUND(AVG(subcategorias_distintas), 2)               AS subcategorias_por_orden,
     ROUND(AVG(sku_distintos), 2)                         AS sku_por_orden,
     ROUND(AVG(unidades), 2)                              AS unidades_por_orden,
     ROUND(SUM(subtotal_net) / COUNT(DISTINCT order_id), 0) AS ticket

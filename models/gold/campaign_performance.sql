@@ -38,7 +38,7 @@ ordenes_items AS (
     SELECT
         o.order_id,
         o.client_id,
-        DATE(o.created_at)      AS fecha_venta,
+        DATE(o.created_at_chile)      AS fecha_venta,
         o.tenant_id,
         oi.sku,
         oi.line_total_net        AS sku_total_value,
@@ -47,7 +47,7 @@ ordenes_items AS (
     JOIN {{ ref('fact_order_items') }} oi
         ON o.order_id = oi.order_id AND o.tenant_id = oi.tenant_id
     WHERE o.tenant_id = 'pf'
-    AND o.status IN ('completado', 'facturado', 'en_reparto')
+    AND o.status_norm = 'pagada'
 ),
 
 -- -----------------------------------------------------------------------

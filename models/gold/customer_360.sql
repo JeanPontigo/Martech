@@ -3,8 +3,11 @@
 --         + silver.dim_company + silver.fact_web_events (PF)
 -- Granularidad: una fila por cliente
 -- RFM calculado con NTILE(5) sobre las 3 dimensiones
+-- Solo considera órdenes con status_norm = 'pagada'
 -- Campos NULL: cltv, churn_probability (BigQuery ML)
 --              email_* (Fidelizador/Mailup pendiente)
+-- total_revenue y avg_ticket usan revenue_net (subtotal menos descuento).
+-- Los top SKU y categorias usan line_total_net, que ya viene neto.
 
 {{
     config(
@@ -33,7 +36,7 @@ clients AS (
         company_id
     FROM {{ ref('dim_client') }}
 ),
-    
+
 -- -----------------------------------------------------------------------
 -- 2. Información de empresa desde dim_company
 -- -----------------------------------------------------------------------
@@ -54,7 +57,7 @@ web_metrics AS (
         CAST(company_id AS STRING)                                  AS company_id,
         COUNT(DISTINCT session_id)                                  AS sessions_total,
         COUNT(DISTINCT CASE
-            WHEN event_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+            WHEN event_date >= DATE_SUB(CURRENT_DATE('America/Santiago'), INTERVAL 30 DAY)
             THEN session_id
         END)                                                        AS sessions_last_30d,
         MAX(event_date)                                             AS last_session,
@@ -66,35 +69,44 @@ web_metrics AS (
     WHERE company_id IS NOT NULL
     GROUP BY tenant_id, company_id
 ),
-    
+
 -- -----------------------------------------------------------------------
--- 4. Metricas transaccionales desde fact_orders
+-- 4. Órdenes válidas — base común para las métricas transaccionales
+-- -----------------------------------------------------------------------
+orders_validas AS (
+    SELECT *
+    FROM {{ ref('fact_orders') }}
+    WHERE status_norm = 'pagada'
+),
+
+-- -----------------------------------------------------------------------
+-- 5. Metricas transaccionales
 -- -----------------------------------------------------------------------
 order_metrics AS (
     SELECT
         client_id,
         tenant_id,
         COUNT(DISTINCT order_id)                AS total_orders,
-        SUM(subtotal_net)                       AS total_revenue,
+        SUM(revenue_net)                       AS total_revenue,
         ROUND(SAFE_DIVIDE(
-            SUM(subtotal_net),
+            SUM(revenue_net),
             COUNT(DISTINCT order_id)
         ), 2)                                   AS avg_ticket,
-        MIN(DATE(created_at))                   AS first_purchase,
-        MAX(DATE(created_at))                   AS last_purchase,
+        MIN(DATE(created_at_chile))             AS first_purchase,
+        MAX(DATE(created_at_chile))             AS last_purchase,
         DATE_DIFF(
-            CURRENT_DATE('UTC'),
-            MAX(DATE(created_at)),
+            CURRENT_DATE('America/Santiago'),
+            MAX(DATE(created_at_chile)),
             DAY
         )                                       AS days_since_last_purchase,
         -- Medio de pago mas frecuente
         APPROX_TOP_COUNT(medio_pago, 1)[OFFSET(0)].value AS preferred_payment_method
-    FROM {{ ref('fact_orders') }}
+    FROM orders_validas
     GROUP BY client_id, tenant_id
 ),
 
 -- -----------------------------------------------------------------------
--- 5. Top 3 SKUs por cliente
+-- 6. Top 3 SKUs por cliente
 -- -----------------------------------------------------------------------
 sku_ranked AS (
     SELECT
@@ -106,8 +118,10 @@ sku_ranked AS (
             PARTITION BY o.client_id, o.tenant_id
             ORDER BY SUM(oi.line_total_net) DESC
         )                       AS sku_rank
-    FROM {{ ref('fact_orders') }} o
-    JOIN {{ ref('fact_order_items') }} oi ON o.order_id = oi.order_id
+    FROM orders_validas o
+    JOIN {{ ref('fact_order_items') }} oi
+        ON  o.order_id  = oi.order_id
+        AND o.tenant_id = oi.tenant_id
     GROUP BY o.client_id, o.tenant_id, oi.sku
 ),
 
@@ -124,24 +138,26 @@ top_skus AS (
 ),
 
 -- -----------------------------------------------------------------------
--- 6. Top 3 categorias por cliente
+-- 7. Top 3 categorias por cliente
 -- -----------------------------------------------------------------------
 category_ranked AS (
     SELECT
         o.client_id,
         o.tenant_id,
-        pc.category_id,
+        p.category_name,
         SUM(oi.line_total_net)  AS cat_revenue,
         ROW_NUMBER() OVER (
             PARTITION BY o.client_id, o.tenant_id
             ORDER BY SUM(oi.line_total_net) DESC
         )                       AS cat_rank
-    FROM {{ ref('fact_orders') }} o
-    JOIN {{ ref('fact_order_items') }} oi ON o.order_id = oi.order_id
-    JOIN {{ ref('dim_product_category') }} pc
-        ON  oi.sku       = pc.sku
-        AND oi.tenant_id = pc.tenant_id
-    GROUP BY o.client_id, o.tenant_id, pc.category_id
+    FROM orders_validas o
+    JOIN {{ ref('fact_order_items') }} oi
+        ON  o.order_id  = oi.order_id
+        AND o.tenant_id = oi.tenant_id
+    LEFT JOIN {{ ref('dim_product') }} p
+        ON  oi.sku       = p.sku
+        AND oi.tenant_id = p.tenant_id
+    GROUP BY o.client_id, o.tenant_id, p.category_name
 ),
 
 top_categories AS (
@@ -149,7 +165,7 @@ top_categories AS (
         client_id,
         tenant_id,
         TO_JSON_STRING(
-            ARRAY_AGG(STRUCT(category_id, cat_revenue) ORDER BY cat_rank)
+            ARRAY_AGG(STRUCT(category_name, cat_revenue) ORDER BY cat_rank)
         ) AS top_categories
     FROM category_ranked
     WHERE cat_rank <= 3
@@ -157,7 +173,7 @@ top_categories AS (
 ),
 
 -- -----------------------------------------------------------------------
--- 7. RFM — scores con NTILE(5) sobre las 3 dimensiones
+-- 8. RFM — scores con NTILE(5) sobre las 3 dimensiones
 -- -----------------------------------------------------------------------
 rfm_base AS (
     SELECT
@@ -210,7 +226,7 @@ rfm_final AS (
 ),
 
 -- -----------------------------------------------------------------------
--- 8. Ensamble final
+-- 9. Ensamble final
 -- -----------------------------------------------------------------------
 assembled AS (
     SELECT
@@ -277,7 +293,7 @@ assembled AS (
 )
 
 -- -----------------------------------------------------------------------
--- 9. Output final
+-- 10. Output final
 -- -----------------------------------------------------------------------
 SELECT *
 FROM assembled
