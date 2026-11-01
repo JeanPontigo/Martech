@@ -1,7 +1,11 @@
 -- models/staging/mc/stg_mc__orders.sql
 -- Normaliza órdenes Carozzi desde bronze.ecommerce (entity IN 'orders','orders_updated')
 -- Fuente: 100% nativo Magento — B2C (sin companies ni B2B attributes)
--- Status: 'complete' y 'Recibido_Odoo' son los estados válidos de Carozzi
+-- Status: se traduce al español en este staging para que la columna sea
+-- comparable con aatn y pf, que ya vienen en español del origen.
+-- 'complete' y 'Recibido_Odoo' son los estados válidos de Carozzi.
+-- La categoria analitica (pagada/cancelada/pendiente) la define status_norm
+-- en fact_orders, no este modelo.
 -- Materialización: view — solo parseo, sin dedupe
 {{ config(materialized='view') }}
 
@@ -37,14 +41,9 @@ SELECT
     CAST(JSON_VALUE(raw_json, '$.subtotal')         AS FLOAT64)                     AS subtotal_net,
     CAST(JSON_VALUE(raw_json, '$.discount_amount')  AS FLOAT64)                     AS discount_amount,
     CAST(JSON_VALUE(raw_json, '$.shipping_amount')  AS FLOAT64)                     AS shipping_amount,
-    CASE
-        WHEN CAST(JSON_VALUE(raw_json, '$.subtotal') AS FLOAT64) > 0
-        THEN CAST(ROUND(
-            ABS(CAST(JSON_VALUE(raw_json, '$.discount_amount') AS FLOAT64))
-            / CAST(JSON_VALUE(raw_json, '$.subtotal') AS FLOAT64) * 100, 2
-        ) AS STRING)
-        ELSE '0'
-    END                                                                             AS discount_pct,
+    -- discount_pct se deriva en fact_orders desde discount_amount y
+    -- subtotal_net, para que sea una sola definicion en los tres tenants.
+    CAST(NULL AS STRING)                                                            AS discount_pct,
     JSON_VALUE(raw_json, '$.extension_attributes.coupon_code')                      AS coupon_code,
     LOWER(JSON_VALUE(raw_json, '$.payment.method'))                                 AS medio_pago,
     'ecommerce'                                                                     AS canal_compra,

@@ -33,7 +33,7 @@ SELECT
     ingested_at,
 
     JSON_VALUE(raw_json, '$.entity_id')                                             AS order_id,
-
+    JSON_VALUE(item, '$.item_id')                                                   AS item_id,
     JSON_VALUE(item, '$.sku')                                                       AS sku,
     JSON_VALUE(item, '$.product_type')                                              AS product_type,
 

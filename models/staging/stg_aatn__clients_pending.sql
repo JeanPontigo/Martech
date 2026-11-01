@@ -24,7 +24,7 @@ SELECT
     -- Identificadores
     JSON_VALUE(raw_json, '$.id_adobe')                                  AS adobe_id,
     JSON_VALUE(raw_json, '$.id_sap')                                    AS erp_id,
-    JSON_VALUE(raw_json, '$.usu_rut')                                   AS tax_id,
+    LOWER(REPLACE(TRIM(JSON_VALUE(raw_json, '$.usu_rut')), '.', ''))    AS tax_id,
 
     -- Datos de la Solicitud
     JSON_VALUE(raw_json, '$.pros_cli_razon_social')                     AS company_name,
@@ -33,7 +33,11 @@ SELECT
     JSON_VALUE(raw_json, '$.pros_cli_celular')                          AS phone,
 
     -- Fechas
-    SAFE.PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S', JSON_VALUE(raw_json, '$.pros_cli_fecha_solicitud')) AS requested_at
+    SAFE.PARSE_TIMESTAMP(
+        '%Y-%m-%d %H:%M:%S',
+        JSON_VALUE(raw_json, '$.pros_cli_fecha_solicitud'),
+        '-04:00'
+    ) AS requested_at
 
 FROM bronze
 WHERE JSON_VALUE(raw_json, '$.id_adobe') IS NOT NULL 
