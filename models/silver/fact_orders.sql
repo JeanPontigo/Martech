@@ -197,6 +197,18 @@ aatn_created_at_nativo AS (
     WHERE order_id IN (SELECT order_id FROM aatn_base_deduped)
     GROUP BY order_id
 ),
+aatn_region_nativa AS (
+    -- Region de facturacion registrada en el nativo. Respaldo para las
+    -- ordenes cuyo custom no trae comuna: 9.107 de 9.116 la tienen
+    -- (verificado 2026-10-26). Se lee sin filtro incremental, igual que
+    -- created_at, para que una orden reprocesada siempre la encuentre.
+    SELECT
+        order_id,
+        ARRAY_AGG(region_nativa IGNORE NULLS ORDER BY ingested_at DESC LIMIT 1)[SAFE_OFFSET(0)] AS region_nativa
+    FROM {{ ref('stg_aatn__orders_status') }}
+    WHERE order_id IN (SELECT order_id FROM aatn_base_deduped)
+    GROUP BY order_id
+),
 
 -- Fallback para las ~318 órdenes sin contraparte en el nativo: se
 -- reconstruye el instante desde el custom declarando su offset -04:00.
@@ -206,12 +218,52 @@ aatn_base_con_fecha AS (
         COALESCE(
             n.created_at_utc,
             DATETIME(TIMESTAMP(b.created_at_local, '-04:00'))
-        ) AS created_at_utc
+        ) AS created_at_utc,
+        rn.region_nativa
     FROM aatn_base_deduped b
     LEFT JOIN aatn_created_at_nativo n
         ON b.order_id = n.order_id
+    LEFT JOIN aatn_region_nativa rn
+        ON b.order_id = rn.order_id
+),
+aatn_company_map AS (
+    -- Traduce el id de empresa de Magento (el que traen las ordenes) a su
+    -- SAP. Se arma desde el staging por $.id, no desde dim_company por
+    -- company_code: company_code es el parent_id, compartido por la matriz
+    -- y sus hijas, y dim_company conserva una sola fila por SAP. Verificado
+    -- 2026-10-26: 79 codigos hijos (SAP 0020) quedaban sin traduccion por
+    -- eso, con 583 ordenes. Con $.id cada codigo tiene un unico SAP y no
+    -- hace falta desempatar por prefijo.
+    SELECT
+        company_magento_id      AS company_code,
+        source_id               AS company_id
+    FROM {{ ref('stg_aatn__companies') }}
+    WHERE company_magento_id IS NOT NULL
+      AND source_id IS NOT NULL
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY company_magento_id
+        ORDER BY ingested_at DESC
+    ) = 1
+),
+aatn_company_rescate AS (
+    -- La empresa se toma del atributo que Magento guarda en la orden, no del
+    -- sufijo +NNNNN del correo. Verificado 2026-10-22: el estructural cubre
+    -- el 100% de las ordenes nativas contra 269.772 del regex, y en 17 casos
+    -- discrepan — ahi el correo apunta a una empresa distinta de la que
+    -- registro la orden, porque la cuenta quedo asociada a otra.
+    SELECT s.order_id, m.company_id
+    FROM {{ ref('stg_aatn__orders_status') }} s
+    INNER JOIN aatn_company_map m
+        ON m.company_code = s.company_id_nativo
+    WHERE s.company_id_nativo IS NOT NULL
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY s.order_id
+        ORDER BY s.ingested_at DESC
+    ) = 1
 ),
 
+
+    
 -- =========================================================================
 -- AATN — combinar base + overlay de status
 -- =========================================================================
@@ -237,7 +289,7 @@ aatn_final AS (
         b.coupon_code,
         b.medio_pago,
         b.canal_compra,
-        b.region_compra,
+        COALESCE(b.region_compra, b.region_nativa)                                  AS region_compra,
         b.ciudad_compra,
         b.bronze_id,
         GREATEST(b.ingested_at, COALESCE(s.ingested_at, b.ingested_at))             AS ingested_at
@@ -280,8 +332,8 @@ with_company AS (
     SELECT
         d.tenant_id,
         d.order_id,
-        COALESCE(d.client_id, c_email.client_id)       AS client_id,
-        d.company_id,
+        COALESCE(d.client_id, c_email.client_id)                AS client_id,
+        COALESCE(t.company_id, r.company_id, d.company_id)      AS company_id,
         d.incremental_id,
         d.erp_id,
         d.gifcard_code,
@@ -307,8 +359,29 @@ with_company AS (
         AND LOWER(d.customer_email) = LOWER(c_email.email)
         AND d.client_id IS NULL
         AND d.tenant_id = 'pf'
+    LEFT JOIN aatn_company_rescate r
+        ON  d.order_id   = r.order_id
+        AND d.tenant_id  = 'aatn'
+        AND d.company_id IS NULL
+    LEFT JOIN aatn_company_map t
+    ON  d.tenant_id   = 'aatn'
+    AND t.company_code = d.company_id
+),
+con_region AS (
+    -- Los tres tenants escriben la region de forma distinta: Ariztia la toma
+    -- de comunas_regiones con el nombre oficial largo, mc y pf la toman del
+    -- campo de direccion de Magento con INITCAP, que ademas capitaliza las
+    -- preposiciones ("De", "Y") y rompe O'Higgins. Eso dejaba 25 valores
+    -- distintos para 16 regiones y partia la Metropolitana en dos filas de
+    -- 12.973 y 106.457. Aqui convergen a una forma canonica.
+    -- Un valor sin equivalencia pasa crudo a proposito: asi se nota.
+    SELECT
+        w.* EXCEPT (region_compra),
+        COALESCE(ra.region_canonica, w.region_compra)   AS region_compra
+    FROM with_company w
+    LEFT JOIN {{ ref('regiones_alias') }} ra
+        ON ra.region_origen = w.region_compra
 )
-
 SELECT
     tenant_id,
     order_id,
@@ -320,10 +393,25 @@ SELECT
     created_at,
     created_at_chile,
     status,
+    CASE
+        WHEN status IN ('facturado', 'entregado','en_ruta', 'en_reparto',
+                        'completado', 'closed')                            THEN 'pagada'
+        WHEN status IN ('canceled', 'cancelado')                           THEN 'cancelada'
+        WHEN status = 'devolucion'                                         THEN 'devuelta'
+        WHEN status IN ('ingresado', 'pre_ingresado', 'en_preparacion')    THEN 'pendiente'
+        WHEN status IS NULL                                                THEN 'sin_estado'
+        ELSE 'otro'
+    END                                                                    AS status_norm,
     updated_at,
     subtotal_net,
+    subtotal_net + COALESCE(discount_amount, 0)                            AS revenue_net,
     discount_amount,
-    discount_pct,
+    ROUND(
+        SAFE_DIVIDE(
+            ABS(COALESCE(discount_amount, 0)),
+            NULLIF(subtotal_net, 0)
+        ) * 100, 2
+    )                                                                       AS discount_pct,
     shipping_amount,
     courier,
     coupon_code,
@@ -333,4 +421,4 @@ SELECT
     ciudad_compra,
     bronze_id,
     ingested_at
-FROM with_company
+FROM con_Region

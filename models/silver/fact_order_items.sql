@@ -1,20 +1,32 @@
 -- models/silver/fact_order_items.sql
 -- Fuente: staging normalizado por tenant (ver models/staging/)
--- Tenant: pf, aatn
--- Granularidad: una fila por item por orden
--- PK: (tenant_id, order_id, sku) — llave compuesta natural, sin hash
+-- Tenant: pf, aatn, mc
+-- Granularidad: una fila por linea de item por orden
+-- PK: (tenant_id, order_id, item_id) — llave compuesta natural, sin hash
+--     Se usa item_id y NO sku porque un mismo SKU puede aparecer dos veces
+--     en una misma orden:
+--       - Carozzi: como componente de un bundle y como compra suelta
+--       - Ariztia: como linea partida por el endpoint custom
+--     Deduplicar por sku descartaba una de las dos lineas y perdia su venta
+--     (1,7% del revenue de Carozzi, 300k en Ariztia).
 -- FK: (tenant_id, order_id) -> fact_orders (client_id y status viven ahí,
 --     no se duplican en esta tabla — hacer JOIN cuando se necesiten)
+--
+-- BUNDLES: un bundle genera dos filas. El padre (product_type='bundle')
+-- lleva el monto y cantidad = packs. El hijo lleva las unidades reales y
+-- monto 0. Para REVENUE se suma todo. Para UNIDADES hay que excluir los
+-- padres: WHERE product_type != 'bundle'.
 --
 -- Fuentes normalizadas:
 --   pf   → {{ ref('stg_pf__order_items') }}    (nativo, insert + update)
 --   aatn → {{ ref('stg_aatn__order_items') }}  (custom, fuente única —
 --          las órdenes de Ariztía no se modifican después de creadas)
+--   mc   → {{ ref('stg_mc__order_items') }}    (nativo, insert + update)
 
 {{
     config(
         materialized='incremental',
-        unique_key=['tenant_id', 'order_id', 'sku'],
+        unique_key=['tenant_id', 'order_id', 'item_id'],
         incremental_strategy='merge',
         partition_by={
             'field': 'ingested_at',
@@ -50,7 +62,7 @@ mc_raw AS (
 
 unioned AS (
     SELECT
-        tenant_id, order_id, sku, product_type,
+        tenant_id, order_id, item_id, sku, product_type,
         qty_ordered, qty_canceled, qty_invoiced, qty_shipped,
         original_price, unit_price, line_total_net,
         discount_amount, discount_pct,
@@ -61,7 +73,7 @@ unioned AS (
     UNION ALL
 
     SELECT
-        tenant_id, order_id, sku, product_type,
+        tenant_id, order_id, item_id, sku, product_type,
         qty_ordered, qty_canceled, qty_invoiced, qty_shipped,
         original_price, unit_price, line_total_net,
         discount_amount, discount_pct,
@@ -72,14 +84,14 @@ unioned AS (
     UNION ALL
 
     SELECT
-        tenant_id, order_id, sku, product_type,
+        tenant_id, order_id, item_id, sku, product_type,
         qty_ordered, qty_canceled, qty_invoiced, qty_shipped,
         original_price, unit_price, line_total_net,
         discount_amount, discount_pct,
         list_price_discounted, discount_applied,
         created_at, updated_at, bronze_id, ingested_at
     FROM mc_raw
-    
+
 ),
 
 deduped AS (
@@ -88,7 +100,7 @@ deduped AS (
         SELECT
             *,
             ROW_NUMBER() OVER (
-                PARTITION BY tenant_id, order_id, sku
+                PARTITION BY tenant_id, order_id, item_id
                 ORDER BY ingested_at DESC
             ) AS rn
         FROM unioned
@@ -99,6 +111,7 @@ deduped AS (
 SELECT
     tenant_id,
     order_id,
+    item_id,
     sku,
     product_type,
     qty_ordered,

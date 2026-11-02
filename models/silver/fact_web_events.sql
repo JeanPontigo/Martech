@@ -1,9 +1,18 @@
 -- models/silver/fact_web_events.sql
--- Fuente: GA4 export nativo (analytics_479606051.events_*)
--- Tenant: solo PF
+-- Fuente: GA4 export nativo — una propiedad por tenant
+--         pf   -> analytics_479606051
+--         aatn -> analytics_417761016 (desde 2026-10-19, no retroactivo)
 -- Granularidad: una fila por evento
 -- PK: hash (GA4 no expone event_id nativo)
--- user_id en GA4 = company_id (decisión de identidad B2B, no customer_id individual)
+--
+-- user_id en GA4 = company_id (decision de identidad B2B, no customer_id
+-- individual). El cast a INT64 se aplica a los dos lados del join, por eso
+-- los codigos SAP con ceros a la izquierda de aatn calzan correctamente.
+--
+-- Cobertura de user_id: pf ~64% de los eventos, aatn ~2% porque el tag del
+-- sitio lo setea solo en el login sin persistirlo. Pendiente con Ariztia.
+-- Para agregar un tenant: declarar la fuente y sumarla a ga4_sources.
+
 {{
     config(
         materialized='incremental',
@@ -17,21 +26,20 @@
     )
 }}
 
-WITH events_raw AS (
-    SELECT *
-    FROM {{ source('ga4_pf', 'events') }}
-    WHERE _TABLE_SUFFIX NOT LIKE '%intraday%'
-    {% if is_incremental() %}
-        AND _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 4 DAY))
-    {% endif %}
-),
+{% set ga4_sources = [
+    ('pf',   'ga4_pf'),
+    ('aatn', 'ga4_aatn')
+] %}
 
-parsed AS (
+WITH parsed AS (
+
+{% for tenant, src in ga4_sources %}
+
     SELECT
-        'pf'                                                    AS tenant_id,
+        '{{ tenant }}'                                          AS tenant_id,
 
         TO_HEX(SHA256(CONCAT(
-            'pf',
+            '{{ tenant }}',
             COALESCE(user_pseudo_id, ''),
             CAST(event_timestamp AS STRING),
             event_name,
@@ -39,35 +47,46 @@ parsed AS (
             COALESCE(CAST({{ ga4_param('batch_page_id', 'int') }} AS STRING), '')
         )))                                                     AS event_id,
 
-        SAFE_CAST(user_id AS INT64)                              AS company_id,
+        SAFE_CAST(user_id AS INT64)                             AS company_id,
         user_pseudo_id,
         CONCAT(
             COALESCE(user_pseudo_id, 'anon'), '-',
             CAST({{ ga4_param('ga_session_id', 'int') }} AS STRING)
-        )                                                        AS session_id,
+        )                                                       AS session_id,
 
         event_name,
-        PARSE_DATE('%Y%m%d', event_date)                         AS event_date,
-        TIMESTAMP_MICROS(event_timestamp)                        AS event_ts,
+        PARSE_DATE('%Y%m%d', event_date)                        AS event_date,
+        TIMESTAMP_MICROS(event_timestamp)                       AS event_ts,
 
-        {{ ga4_param('page_location', 'string') }}                AS page_location,
-        {{ ga4_param('page_title', 'string') }}                   AS page_title,
+        {{ ga4_param('page_location', 'string') }}               AS page_location,
+        {{ ga4_param('page_title', 'string') }}                  AS page_title,
 
-        device.category                                          AS device_category,
-        device.operating_system                                  AS device_os,
-        traffic_source.source                                    AS traffic_source,
-        traffic_source.medium                                    AS traffic_medium,
+        device.category                                         AS device_category,
+        device.operating_system                                 AS device_os,
+        traffic_source.source                                   AS traffic_source,
+        traffic_source.medium                                   AS traffic_medium,
         session_traffic_source_last_click.cross_channel_campaign.campaign_name AS utm_campaign,
         SAFE_CAST(
             (SELECT ep.value.double_value
              FROM UNNEST(event_params) AS ep
              WHERE ep.key = 'value'
              LIMIT 1)
-        AS FLOAT64)                                                     AS event_value,
-        geo.region                                                AS geo_region,
-        geo.city                                                  AS geo_city
+        AS FLOAT64)                                             AS event_value,
+        geo.region                                              AS geo_region,
+        geo.city                                                AS geo_city
 
-    FROM events_raw
+    FROM {{ source(src, 'events') }}
+    WHERE _TABLE_SUFFIX NOT LIKE '%intraday%'
+    {% if is_incremental() %}
+        AND _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE('America/Santiago'), INTERVAL 4 DAY))
+    {% endif %}
+
+{% if not loop.last %}
+    UNION ALL
+{% endif %}
+
+{% endfor %}
+
 ),
 
 -- -----------------------------------------------------------------------

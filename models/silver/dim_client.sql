@@ -27,7 +27,7 @@ mc_raw AS (
 aatn_clients AS (
     SELECT
         c.bronze_id, c.tenant_id, c.ingested_at,
-        client_id                                    AS source_id,
+        COALESCE(NULLIF(TRIM(c.client_id), ''), CONCAT('ADOBE-', c.adobe_id))  AS source_id,
         c.email                                      AS email_raw,
         LOWER(c.email)                               AS email,
         LOWER(c.email)                               AS email_clean,
@@ -65,7 +65,13 @@ aatn_pending AS (
         FALSE                                       AS is_technical_account,
         CAST(requested_at AS DATETIME)              AS created_at,
         CAST(NULL AS DATETIME)                      AS updated_at
-    FROM {{ ref('stg_aatn__clients_pending') }}
+    FROM {{ ref('stg_aatn__clients_pending') }} p
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM {{ ref('stg_aatn__clients') }} c
+        WHERE c.tenant_id = p.tenant_id
+          AND c.tax_id    = p.tax_id
+    )
 ),
 aatn_raw AS (
     SELECT * FROM aatn_clients

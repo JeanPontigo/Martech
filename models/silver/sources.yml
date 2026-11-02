@@ -15,6 +15,13 @@ sources:
       - name: events
         identifier: "events_*"
 
+  - name: ga4_aatn
+    project: martech-data-platform-atlas
+    dataset: analytics_417761016
+    tables:
+      - name: events
+        identifier: "events_*"
+
   - name: silver
     project: martech-data-platform-atlas
     dataset: silver
